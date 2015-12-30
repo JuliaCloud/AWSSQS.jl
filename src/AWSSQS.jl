@@ -9,6 +9,8 @@
 
 module AWSSQS
 
+__precompile__()
+
 export sqs_get_queue, sqs_create_queue, sqs_delete_queue, 
        sqs_send_message, sqs_send_message_batch, sqs_receive_message,
        sqs_delete_message, sqs_flush, sqs_get_queue_attributes, sqs_count,
@@ -27,7 +29,11 @@ sqs_name(q) = split(q[:resource], "/")[3]
 sqs_arn(q) = arn(q, "sqs", sqs_name(q))
 
 
-sqs(aws, query) = do_request(post_request(aws, "sqs", "2012-11-05", query))
+function sqs(aws, query)
+    query["ContentType"] = "JSON"
+    do_request(post_request(aws, "sqs", "2012-11-05", query))
+end
+
 sqs(aws; args...) = sqs(aws, StringDict(args))
 
 

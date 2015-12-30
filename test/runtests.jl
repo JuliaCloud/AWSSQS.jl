@@ -46,9 +46,6 @@ info = sqs_get_queue_attributes(qa)
 @test sqs_count(qa) == 0
 
 
-println("SQS ok.")
-
-
 
 #==============================================================================#
 # End of file.
