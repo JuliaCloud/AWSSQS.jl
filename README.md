@@ -2,6 +2,8 @@
 
 AWS SQS Interface for Julia
 
+[![Build Status](https://travis-ci.org/samoconnor/AWSSQS.jl.svg)](https://travis-ci.org/samoconnor/AWSSQS.jl)
+
 ```julia
 using AWSSQS
 
