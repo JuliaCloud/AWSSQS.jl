@@ -149,10 +149,10 @@ end
 type AWSSQSMessages queue end
 
 sqs_messages(queue) = AWSSQSMessages(queue)
-Base.eltype(AWSSQSMessages) = Dict{Symbol,Any}
-Base.start(q::AWSSQSMessages) = nothing
-Base.done(q::AWSSQSMessages, state) = false
-Base.next(q::AWSSQSMessages, state) = (sqs_receive_message(q.queue), nothing)
+Base.eltype(::AWSSQSMessages) = Dict{Symbol,Any}
+Base.start(::AWSSQSMessages) = nothing
+Base.done(::AWSSQSMessages, ::Any) = false
+Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
 
 
 function sqs_delete_message(queue, message)
