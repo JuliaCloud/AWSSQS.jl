@@ -40,7 +40,11 @@ sqs(aws; args...) = sqs(aws, StringDict(args))
 function sqs_list_queues(aws, prefix="")
 
     r = sqs(aws, Action="ListQueues", QueueNamePrefix = prefix)
-    [merge(aws, resource = URI(url).path) for url in r["queueUrls"]]
+    if r["queueUrls"] == nothing
+        return []
+    else
+        return [merge(aws, resource = URI(url).path) for url in r["queueUrls"]]
+    end
 end
 
 # SQS Queue Lookup.
