@@ -23,8 +23,12 @@ aws = AWSCore.aws_config(region="ap-southeast-2")
 # SQS tests
 #-------------------------------------------------------------------------------
 
+for q in sqs_list_queues(aws, "ocaws-jl-test-queue-")
+    sqs_delete_queue(q)
+end
+
 test_queue = "ocaws-jl-test-queue-" * lowercase(Dates.format(now(Dates.UTC),
-                                                             "yyyymmddTHHMMSSZ"))
+                                                            "yyyymmddTHHMMSSZ"))
 
 qa = sqs_create_queue(aws, test_queue)
 
@@ -45,6 +49,7 @@ info = sqs_get_queue_attributes(qa)
 @test info["ApproximateNumberOfMessages"] == "0"
 @test sqs_count(qa) == 0
 
+sqs_delete_queue(qa)
 
 
 #==============================================================================#

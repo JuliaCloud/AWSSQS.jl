@@ -11,7 +11,7 @@ module AWSSQS
 
 __precompile__()
 
-export sqs_get_queue, sqs_create_queue, sqs_delete_queue, 
+export sqs_list_queues, sqs_get_queue, sqs_create_queue, sqs_delete_queue, 
        sqs_send_message, sqs_send_message_batch, sqs_receive_message,
        sqs_delete_message, sqs_flush, sqs_get_queue_attributes, sqs_count,
        sqs_busy_count
@@ -36,6 +36,12 @@ end
 
 sqs(aws; args...) = sqs(aws, StringDict(args))
 
+
+function sqs_list_queues(aws, prefix="")
+
+    r = sqs(aws, Action="ListQueues", QueueNamePrefix = prefix)
+    [merge(aws, resource = URI(url).path) for url in r["queueUrls"]]
+end
 
 # SQS Queue Lookup.
 # Find queue URL.
@@ -100,8 +106,8 @@ function sqs_delete_queue(queue)
 
     @protected try
 
-        println("Deleting SQS Queue $(aws["path"])")
-        sqs(aws, Action="DeleteQueue")
+        println("Deleting SQS Queue $(sqs_name(queue))")
+        sqs(queue, Action="DeleteQueue")
 
     catch e
         @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
