@@ -159,7 +159,7 @@ end
 type AWSSQSMessages queue end
 
 sqs_messages(queue) = AWSSQSMessages(queue)
-Base.eltype(::AWSSQSMessages) = Dict{Symbol,Any}
+Base.eltype(::Type{AWSSQSMessages}) = Dict{Symbol,Any}
 Base.start(::AWSSQSMessages) = nothing
 Base.done(::AWSSQSMessages, ::Any) = false
 Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
