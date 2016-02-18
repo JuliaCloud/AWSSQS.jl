@@ -7,9 +7,10 @@
 #==============================================================================#
 
 
-module AWSSQS
-
 __precompile__()
+
+
+module AWSSQS
 
 export sqs_list_queues, sqs_get_queue, sqs_create_queue, sqs_delete_queue, 
        sqs_send_message, sqs_send_message_batch, sqs_receive_message,
