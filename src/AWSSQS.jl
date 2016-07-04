@@ -13,6 +13,7 @@ __precompile__()
 module AWSSQS
 
 export sqs_list_queues, sqs_get_queue, sqs_create_queue, sqs_delete_queue, 
+       sqs_set_policy, sqs_arn,
        sqs_send_message, sqs_send_message_batch, sqs_receive_message,
        sqs_delete_message, sqs_flush, sqs_get_queue_attributes, sqs_count,
        sqs_busy_count
@@ -25,20 +26,23 @@ using Retry
 import Nettle: digest, hexdigest
 import URIParser: URI
 
+using Compat
+import Compat: String
+
 
 sqs_name(q) = split(q[:resource], "/")[3]
 sqs_arn(q) = arn(q, "sqs", sqs_name(q))
 
 
-function sqs(aws, query)
+function sqs(aws::AWSConfig, query)
     query["ContentType"] = "JSON"
-    do_request(post_request(aws, "sqs", "2012-11-05", query))
+    do_request(post_request(aws::AWSConfig, "sqs", "2012-11-05", query))
 end
 
-sqs(aws; args...) = sqs(aws, StringDict(args))
+sqs(aws::AWSConfig; args...) = sqs(aws, StringDict(args))
 
 
-function sqs_list_queues(aws, prefix="")
+function sqs_list_queues(aws::AWSConfig, prefix="")
 
     r = sqs(aws, Action="ListQueues", QueueNamePrefix = prefix)
     if r["queueUrls"] == nothing
@@ -52,7 +56,7 @@ end
 # Find queue URL.
 # Return a revised "aws" dict that captures the URL path.
 
-function sqs_get_queue(aws, name)
+function sqs_get_queue(aws::AWSConfig, name)
 
     @protected try
 
@@ -72,7 +76,7 @@ end
 # options: VisibilityTimeout, MessageRetentionPeriod, DelaySeconds etc
 # See http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_CreateQueue.html
 
-function sqs_create_queue(aws, name; options...)
+function sqs_create_queue(aws::AWSConfig, name; options...)
 
     println("""Creating SQS Queue "$name"...""")
 
@@ -107,7 +111,17 @@ function sqs_create_queue(aws, name; options...)
 end
 
 
-function sqs_delete_queue(queue)
+function sqs_set_policy(queue::AWSConfig, policy::String)
+
+    sqs(queue, Dict("Action" => "SetQueueAttributes",
+                    "Attribute.Name" => "Policy",
+                    "Attribute.Value" => policy))
+end
+
+
+
+
+function sqs_delete_queue(queue::AWSConfig)
 
     @protected try
 
@@ -120,7 +134,7 @@ function sqs_delete_queue(queue)
 end
 
 
-function sqs_send_message(queue, message)
+function sqs_send_message(queue::AWSConfig, message)
 
     sqs(queue, Action="SendMessage",
                MessageBody = message,
@@ -128,7 +142,7 @@ function sqs_send_message(queue, message)
 end
 
 
-function sqs_send_message_batch(queue, messages)
+function sqs_send_message_batch(queue::AWSConfig, messages)
 
     batch = Dict()
     
@@ -140,7 +154,7 @@ function sqs_send_message_batch(queue, messages)
 end
 
 
-function sqs_receive_message(queue)
+function sqs_receive_message(queue::AWSConfig)
 
     r = sqs(queue, Action="ReceiveMessage", MaxNumberOfMessages = "1")
     r = r["messages"]
@@ -159,20 +173,20 @@ end
 
 type AWSSQSMessages queue end
 
-sqs_messages(queue) = AWSSQSMessages(queue)
+sqs_messages(queue::AWSConfig) = AWSSQSMessages(queue)
 Base.eltype(::Type{AWSSQSMessages}) = Dict{Symbol,Any}
 Base.start(::AWSSQSMessages) = nothing
 Base.done(::AWSSQSMessages, ::Any) = false
 Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
 
 
-function sqs_delete_message(queue, message)
+function sqs_delete_message(queue::AWSConfig, message)
 
     sqs(queue, Action="DeleteMessage", ReceiptHandle = message[:handle])
 end
 
 
-function sqs_flush(queue)
+function sqs_flush(queue::AWSConfig)
 
     while (m = sqs_receive_message(queue)) != nothing
         sqs_delete_message(queue, m)
@@ -180,7 +194,7 @@ function sqs_flush(queue)
 end
 
 
-function sqs_get_queue_attributes(queue)
+function sqs_get_queue_attributes(queue::AWSConfig)
 
     @protected try
 
@@ -197,13 +211,13 @@ function sqs_get_queue_attributes(queue)
 end
 
 
-function sqs_count(queue)
+function sqs_count(queue::AWSConfig)
     
     parse(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessages"])
 end
 
 
-function sqs_busy_count(queue)
+function sqs_busy_count(queue::AWSConfig)
     
     parase(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessagesNotVisible"])
 end
