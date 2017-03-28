@@ -26,9 +26,6 @@ using Retry
 import Nettle: digest, hexdigest
 import URIParser: URI
 
-using Compat
-import Compat: String
-
 
 sqs_name(q) = split(q[:resource], "/")[3]
 sqs_arn(q) = arn(q, "sqs", sqs_name(q))
@@ -201,7 +198,7 @@ function sqs_get_queue_attributes(queue::AWSConfig)
         r = sqs(queue, Dict("Action" => "GetQueueAttributes",
                             "AttributeName.1" => "All"))
 
-        return [i["Name"] => i["Value"] for i in r["Attributes"]]
+        return Dict(i["Name"] => i["Value"] for i in r["Attributes"])
 
     catch e
         @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
