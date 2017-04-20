@@ -36,7 +36,7 @@ function sqs(aws::AWSConfig, query)
     do_request(post_request(aws::AWSConfig, "sqs", "2012-11-05", query))
 end
 
-sqs(aws::AWSConfig; args...) = sqs(aws, StringDict(args))
+sqs(aws::AWSConfig; args...) = sqs(aws, stringdict(args))
 
 
 function sqs_list_queues(aws::AWSConfig, prefix="")
@@ -45,7 +45,7 @@ function sqs_list_queues(aws::AWSConfig, prefix="")
     if r["queueUrls"] == nothing
         return []
     else
-        return [merge(aws, resource = URI(url).path) for url in r["queueUrls"]]
+        return [merge(aws, Dict(:resource => URI(url).path)) for url in r["queueUrls"]]
     end
 end
 
@@ -59,7 +59,7 @@ function sqs_get_queue(aws::AWSConfig, name)
 
         r = sqs(aws, Action="GetQueueUrl", QueueName = name)
         url = r["QueueUrl"]
-        return merge(aws, resource = URI(url).path)
+        return merge(aws, Dict(:resource => URI(url).path))
 
     catch e
         @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
@@ -90,7 +90,7 @@ function sqs_create_queue(aws::AWSConfig, name; options...)
     @repeat 4 try
 
         url = sqs(aws, query)["QueueUrl"]
-        return merge(aws, resource = URI(url).path)
+        return merge(aws, Dict(:resource => URI(url).path))
 
     catch e
 
