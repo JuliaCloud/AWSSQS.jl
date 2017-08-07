@@ -3,4 +3,4 @@ AWSCore 0.1
 SymDict 0.1.2
 Retry
 Nettle
-URIParser
+MbedTLS

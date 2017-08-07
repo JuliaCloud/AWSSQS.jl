@@ -22,8 +22,8 @@ export sqs_list_queues, sqs_get_queue, sqs_create_queue, sqs_delete_queue,
 using AWSCore
 using SymDict
 using Retry
+using MbedTLS
 
-import Nettle: digest, hexdigest
 import URIParser: URI
 
 
@@ -200,7 +200,7 @@ function sqs_send_message(queue::AWSQueue, message)
 
     sqs(queue, "SendMessage",
                MessageBody = message,
-               MD5OfMessageBody = string(digest("md5", message)))
+               MD5OfMessageBody = string(digest(MD_MD5, message)))
 end
 
 
@@ -247,7 +247,7 @@ function sqs_receive_message(queue::AWSQueue)
     message = r[1]["Body"]
     md5     = r[1]["MD5OfBody"]
 
-    @assert md5 == hexdigest("md5", message)
+    @assert md5 == bytes2hex(digest(MD_MD5, message))
 
     @SymDict(message, handle)
 end
