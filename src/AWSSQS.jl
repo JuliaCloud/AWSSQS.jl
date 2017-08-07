@@ -48,12 +48,9 @@ ARN of a queue.
 sqs_arn(q::AWSQueue) = arn(q, "sqs", sqs_name(q))
 
 
-function sqs(aws::AWSConfig, query)
-    query["ContentType"] = "JSON"
-    do_request(post_request(aws::AWSConfig, "sqs", "2012-11-05", query))
-end
+const sqs = AWSCore.Services.sqs
 
-sqs(aws::AWSConfig; args...) = sqs(aws, stringdict(args))
+sqs(aws::AWSConfig, action; args...) = sqs(aws, action, stringdict(args))
 
 
 """
@@ -70,7 +67,7 @@ end
 
 function sqs_list_queues(aws::AWSConfig, prefix="")
 
-    r = sqs(aws, Action="ListQueues", QueueNamePrefix = prefix)
+    r = sqs(aws, "ListQueues", QueueNamePrefix = prefix)
     if r["queueUrls"] == nothing
         return []
     else
@@ -96,7 +93,7 @@ function sqs_get_queue(aws::AWSConfig, name)
 
     @protected try
 
-        r = sqs(aws, Action="GetQueueUrl", QueueName = name)
+        r = sqs(aws, "GetQueueUrl", QueueName = name)
         url = r["QueueUrl"]
         return merge(aws, Dict(:resource => URI(url).path))
 
@@ -130,7 +127,6 @@ function sqs_create_queue(aws::AWSConfig, name; options...)
     println("""Creating SQS Queue "$name"...""")
 
     query = Dict(
-        "Action" => "CreateQueue",
         "QueueName" => name
     )
 
@@ -141,7 +137,7 @@ function sqs_create_queue(aws::AWSConfig, name; options...)
 
     @repeat 4 try
 
-        url = sqs(aws, query)["QueueUrl"]
+        url = sqs(aws, "CreateQueue", query)["QueueUrl"]
         return merge(aws, Dict(:resource => URI(url).path))
 
     catch e
@@ -170,9 +166,8 @@ Set [access `policy`](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQ
 
 function sqs_set_policy(queue::AWSQueue, policy::String)
 
-    sqs(queue, Dict("Action" => "SetQueueAttributes",
-                    "Attribute.Name" => "Policy",
-                    "Attribute.Value" => policy))
+    sqs(queue, "SetQueueAttributes", Dict("Attribute.Name" => "Policy",
+                                           "Attribute.Value" => policy))
 end
 
 
@@ -187,7 +182,7 @@ function sqs_delete_queue(queue::AWSQueue)
     @protected try
 
         println("Deleting SQS Queue $(sqs_name(queue))")
-        sqs(queue, Action="DeleteQueue")
+        sqs(queue, "DeleteQueue")
 
     catch e
         @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
@@ -203,7 +198,7 @@ Send a `message` to a queue.
 
 function sqs_send_message(queue::AWSQueue, message)
 
-    sqs(queue, Action="SendMessage",
+    sqs(queue, "SendMessage",
                MessageBody = message,
                MD5OfMessageBody = string(digest("md5", message)))
 end
@@ -223,7 +218,7 @@ function sqs_send_message_batch(queue::AWSQueue, messages)
         batch["SendMessageBatchRequestEntry.$i.Id"] = i
         batch["SendMessageBatchRequestEntry.$i.MessageBody"] = message
     end
-    sqs(queue, Action="SendMessageBatch", Attributes=batch)
+    sqs(queue, "SendMessageBatch", Attributes=batch)
 end
 
 
@@ -242,7 +237,7 @@ sqs_delete_message(m)
 
 function sqs_receive_message(queue::AWSQueue)
 
-    r = sqs(queue, Action="ReceiveMessage", MaxNumberOfMessages = "1")
+    r = sqs(queue, "ReceiveMessage", MaxNumberOfMessages = "1")
     r = r["messages"]
     if r == nothing
         return nothing
@@ -289,7 +284,7 @@ Delete a `message` from a queue.
 
 function sqs_delete_message(queue::AWSQueue, message)
 
-    sqs(queue, Action="DeleteMessage", ReceiptHandle = message[:handle])
+    sqs(queue, "DeleteMessage", ReceiptHandle = message[:handle])
 end
 
 
@@ -317,8 +312,8 @@ function sqs_get_queue_attributes(queue::AWSQueue)
 
     @protected try
 
-        r = sqs(queue, Dict("Action" => "GetQueueAttributes",
-                            "AttributeName.1" => "All"))
+        r = sqs(queue, "GetQueueAttributes",
+                       Dict("AttributeName.1" => "All"))
 
         return Dict(i["Name"] => i["Value"] for i in r["Attributes"])
 
