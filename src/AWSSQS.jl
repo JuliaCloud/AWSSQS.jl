@@ -48,7 +48,7 @@ ARN of a queue.
 sqs_arn(q::AWSQueue) = arn(q, "sqs", sqs_name(q))
 
 
-const sqs = AWSCore.Services.sqs
+sqs(aws::AWSConfig, action, args) = AWSCore.Services.sqs(aws, action, args)
 
 sqs(aws::AWSConfig, action; args...) = sqs(aws, action, stringdict(args))
 
