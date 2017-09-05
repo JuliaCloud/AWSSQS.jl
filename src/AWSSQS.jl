@@ -269,11 +269,21 @@ end
 ```
 """
 
+# sqs_messages(queue::AWSQueue) = AWSSQSMessages(queue)
+# Base.eltype(::Type{AWSSQSMessages}) = Dict{Symbol,Any}
+# Base.start(::AWSSQSMessages) = nothing
+# Base.done(::AWSSQSMessages, ::Any) = false
+# Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
+
 sqs_messages(queue::AWSQueue) = AWSSQSMessages(queue)
 Base.eltype(::Type{AWSSQSMessages}) = Dict{Symbol,Any}
 Base.start(::AWSSQSMessages) = nothing
-Base.done(::AWSSQSMessages, ::Any) = false
-Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
+Base.done(::AWSSQSMessages, state::Any) = state
+Base.next(q::AWSSQSMessages, ::Any) = try
+    (sqs_receive_message(q.queue), nothing)
+catch EOFError
+    (nothing,true)
+end
 
 
 """
@@ -345,7 +355,7 @@ Approximate number of messages not visible in a queue.
 
 function sqs_busy_count(queue::AWSQueue)
 
-    parase(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessagesNotVisible"])
+    parse(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessagesNotVisible"])
 end
 
 
