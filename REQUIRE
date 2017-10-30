@@ -3,4 +3,4 @@ AWSCore 0.2
 SymDict 0.1.2
 Retry
 MbedTLS
-URIParser
+HTTP
