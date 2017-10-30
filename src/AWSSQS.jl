@@ -344,7 +344,7 @@ Approximate number of messages not visible in a queue.
 
 function sqs_busy_count(queue::AWSQueue)
 
-    parase(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessagesNotVisible"])
+    parse(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessagesNotVisible"])
 end
 
 
