@@ -1,6 +1,6 @@
-julia 0.5
-AWSCore 0.2
+julia 0.6
+AWSCore 0.3
 SymDict 0.1.2
 Retry
 MbedTLS
-HTTP
+HTTP 0.5.4
