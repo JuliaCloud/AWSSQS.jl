@@ -211,13 +211,10 @@ Send a collection of `messages` to a queue.
 
 function sqs_send_message_batch(queue::AWSQueue, messages)
 
-    batch = Dict()
+    batch = [Dict("Id" => i, "MessageBody" => message)
+        for (i, message) in enumerate(messages)]
 
-    for (i, message) in enumerate(messages)
-        batch["SendMessageBatchRequestEntry.$i.Id"] = i
-        batch["SendMessageBatchRequestEntry.$i.MessageBody"] = message
-    end
-    sqs(queue, "SendMessageBatch", Attributes=batch)
+    sqs(queue, "SendMessageBatch", SendMessageBatchRequestEntry=batch)
 end
 
 
