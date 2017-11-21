@@ -97,7 +97,7 @@ function sqs_get_queue(aws::AWSConfig, name)
         return merge(aws, Dict(:resource => HTTP.URIs.path(HTTP.URI(url))))
 
     catch e
-        @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
+        @ignore if ecode(e) == "AWS.SimpleQueueService.NonExistentQueue" end
     end
 
     return nothing
@@ -141,11 +141,11 @@ function sqs_create_queue(aws::AWSConfig, name; options...)
 
     catch e
 
-        @retry if e.code == "QueueAlreadyExists"
+        @retry if ecode(e) == "QueueAlreadyExists"
             sqs_delete_queue(aws, name)
         end
 
-        @retry if e.code == "AWS.SimpleQueueService.QueueDeletedRecently"
+        @retry if ecode(e) == "AWS.SimpleQueueService.QueueDeletedRecently"
             println("""Waiting 1 minute to re-create Queue "$name"...""")
             sleep(60)
         end
@@ -184,7 +184,7 @@ function sqs_delete_queue(queue::AWSQueue)
         sqs(queue, "DeleteQueue")
 
     catch e
-        @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
+        @ignore if ecode(e) == "AWS.SimpleQueueService.NonExistentQueue" end
     end
 end
 
@@ -314,7 +314,7 @@ function sqs_get_queue_attributes(queue::AWSQueue)
         return Dict(i["Name"] => i["Value"] for i in r["Attributes"])
 
     catch e
-        @ignore if e.code == "AWS.SimpleQueueService.NonExistentQueue" end
+        @ignore if ecode(e) == "AWS.SimpleQueueService.NonExistentQueue" end
     end
 
     return nothing
