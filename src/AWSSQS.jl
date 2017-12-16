@@ -70,7 +70,7 @@ function sqs_list_queues(aws::AWSConfig, prefix="")
     if r["queueUrls"] == nothing
         return []
     else
-        return [merge(aws, Dict(:resource => HTTP.URIs.path(HTTP.URI(url)))) for url in r["queueUrls"]]
+        return [merge(aws, Dict(:resource => HTTP.URI(url).path)) for url in r["queueUrls"]]
     end
 end
 
@@ -94,7 +94,7 @@ function sqs_get_queue(aws::AWSConfig, name)
 
         r = sqs(aws, "GetQueueUrl", QueueName = name)
         url = r["QueueUrl"]
-        return merge(aws, Dict(:resource => HTTP.URIs.path(HTTP.URI(url))))
+        return merge(aws, Dict(:resource => HTTP.URI(url).path))
 
     catch e
         @ignore if ecode(e) == "AWS.SimpleQueueService.NonExistentQueue" end
@@ -137,7 +137,7 @@ function sqs_create_queue(aws::AWSConfig, name; options...)
     @repeat 4 try
 
         url = sqs(aws, "CreateQueue", query)["QueueUrl"]
-        return merge(aws, Dict(:resource => HTTP.URIs.path(HTTP.URI(url))))
+        return merge(aws, Dict(:resource => HTTP.URI(url).path))
 
     catch e
 
