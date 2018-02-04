@@ -20,11 +20,11 @@ export sqs_list_queues, sqs_get_queue, sqs_create_queue, sqs_delete_queue,
 
 
 using AWSCore
-using SymDict
+using AWSSDK.SQS
 using Retry
-using MbedTLS
+using SymDict
 using HTTP
-
+using MbedTLS
 
 const AWSQueue = AWSConfig
 
