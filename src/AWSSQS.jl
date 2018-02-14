@@ -16,7 +16,7 @@ export sqs_list_queues, sqs_get_queue, sqs_create_queue, sqs_delete_queue,
        sqs_set_policy, sqs_name, sqs_arn,
        sqs_send_message, sqs_send_message_batch, sqs_receive_message,
        sqs_delete_message, sqs_flush, sqs_get_queue_attributes, sqs_count,
-       sqs_busy_count
+       sqs_busy_count, sqs_messages
 
 
 using AWSCore
