@@ -18,9 +18,4 @@ sqs_send_message(q, "Hello!")
 m = sqs_receive_message(q)
 println(m[:message])
 sqs_delete_message(q, m)
-
-for m in sqs_messages(q)
-    println(m[:message])
-    sqs_delete_message(q, m)
-end
 ```
