@@ -34,7 +34,6 @@ const AWSQueue = AWSConfig
 
 Name of a queue.
 """
-
 sqs_name(q::AWSQueue) = split(q[:resource], "/")[3]
 
 
@@ -43,7 +42,6 @@ sqs_name(q::AWSQueue) = split(q[:resource], "/")[3]
 
 ARN of a queue.
 """
-
 sqs_arn(q::AWSQueue) = arn(q, "sqs", sqs_name(q))
 
 
@@ -63,7 +61,6 @@ for q in sqs_list_queues()
 end
 ```
 """
-
 function sqs_list_queues(aws::AWSConfig, prefix="")
 
     r = sqs(aws, "ListQueues", QueueNamePrefix = prefix)
@@ -87,7 +84,6 @@ q = sqs_get_queue("my-queue")
 sqs_send_message(q, "my message")
 ```
 """
-
 function sqs_get_queue(aws::AWSConfig, name)
 
     @protected try
@@ -120,7 +116,6 @@ q = sqs_create_queue("my-queue")
 sqs_send_message(q, "my message")
 ```
 """
-
 function sqs_create_queue(aws::AWSConfig, name; options...)
 
     println("""Creating SQS Queue "$name"...""")
@@ -151,7 +146,7 @@ function sqs_create_queue(aws::AWSConfig, name; options...)
         end
     end
 
-    assert(false) # Unreachable.
+    @assert(false) # Unreachable.
 end
 
 sqs_create_queue(a; b...) = sqs_create_queue(default_aws_config(), a; b...)
@@ -162,7 +157,6 @@ sqs_create_queue(a; b...) = sqs_create_queue(default_aws_config(), a; b...)
 
 Set [access `policy`](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-creating-custom-policies.html#sqs-creating-custom-policies-access-policy-examples) for a queue.
 """
-
 function sqs_set_policy(queue::AWSQueue, policy::String)
 
     sqs(queue, "SetQueueAttributes", Dict("Attribute.Name" => "Policy",
@@ -175,7 +169,6 @@ end
 
 Delete a queue.
 """
-
 function sqs_delete_queue(queue::AWSQueue)
 
     @protected try
@@ -194,7 +187,6 @@ end
 
 Send a `message` to a queue.
 """
-
 function sqs_send_message(queue::AWSQueue, message)
 
     sqs(queue, "SendMessage",
@@ -208,7 +200,6 @@ end
 
 Send a collection of `messages` to a queue.
 """
-
 function sqs_send_message_batch(queue::AWSQueue, messages)
 
     batch = [Dict("Id" => i, "MessageBody" => message)
@@ -230,7 +221,6 @@ println(m[:message])
 sqs_delete_message(m)
 ```
 """
-
 function sqs_receive_message(queue::AWSQueue)
 
     r = sqs(queue, "ReceiveMessage", MaxNumberOfMessages = "1")
@@ -249,7 +239,9 @@ function sqs_receive_message(queue::AWSQueue)
 end
 
 
-type AWSSQSMessages queue end
+mutable struct AWSSQSMessages
+    queue
+end
 
 
 """
@@ -264,12 +256,10 @@ for m in sqs_messages(q)
 end
 ```
 """
-
 sqs_messages(queue::AWSQueue) = AWSSQSMessages(queue)
+
 Base.eltype(::Type{AWSSQSMessages}) = Dict{Symbol,Any}
-Base.start(::AWSSQSMessages) = nothing
-Base.done(::AWSSQSMessages, ::Any) = false
-Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
+Base.iterate(q::AWSSQSMessages, it=nothing) = (sqs_receive_message(q.queue), nothing)
 
 
 """
@@ -277,7 +267,6 @@ Base.next(q::AWSSQSMessages, ::Any) = (sqs_receive_message(q.queue), nothing)
 
 Delete a `message` from a queue.
 """
-
 function sqs_delete_message(queue::AWSQueue, message)
 
     sqs(queue, "DeleteMessage", ReceiptHandle = message[:handle])
@@ -289,7 +278,6 @@ end
 
 Delete all messages from a queue.
 """
-
 function sqs_flush(queue::AWSQueue)
 
     while (m = sqs_receive_message(queue)) != nothing
@@ -303,7 +291,6 @@ end
 
 Get [Queue Attributes](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_GetQueueAttributes.html) for a queue.
 """
-
 function sqs_get_queue_attributes(queue::AWSQueue)
 
     @protected try
@@ -326,7 +313,6 @@ end
 
 Approximate number of messages in a queue.
 """
-
 function sqs_count(queue::AWSQueue)
 
     parse(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessages"])
@@ -338,7 +324,6 @@ end
 
 Approximate number of messages not visible in a queue.
 """
-
 function sqs_busy_count(queue::AWSQueue)
 
     parse(Int,sqs_get_queue_attributes(queue)["ApproximateNumberOfMessagesNotVisible"])
