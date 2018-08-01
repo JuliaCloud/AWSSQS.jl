@@ -6,7 +6,9 @@
 
 
 using AWSSQS
-using Base.Test
+using AWSCore
+using Test
+using Dates
 
 AWSCore.set_debug_level(1)
 
