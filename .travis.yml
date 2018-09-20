@@ -4,7 +4,7 @@ os:
 - osx
 julia:
 - 0.7
-- nightly
+- 1.0
 notifications:
   email: false
 env:
