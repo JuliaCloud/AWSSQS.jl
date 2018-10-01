@@ -183,7 +183,8 @@ end
 
 
 """
-    sqs_send_message(::AWSQueue, message)
+    sqs_send_message(::AWSQueue, message, options...)
+    ex: sqs_send_message(q, "Hello2", Dict(:MessageGroupId=>"interestGid")...)
 
 Send a `message` to a queue.
 """
@@ -194,14 +195,6 @@ function sqs_send_message(queue::AWSQueue, message::String, options...)
                MD5OfMessageBody = string(digest(MD_MD5, message)),
                options...
        )
-end
-
-function sqs_send_message(queue::AWSQueue, message::String, groupId::String)
-
-    sqs(queue, "SendMessage",
-               MessageBody = message,
-               MessageGroupId = groupId,
-               MD5OfMessageBody = string(digest(MD_MD5, message)))
 end
 
 
