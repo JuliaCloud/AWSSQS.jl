@@ -189,7 +189,7 @@ Send a `message` to a queue.
 """
 function sqs_send_message(queue::AWSQueue, message::String, options...)
 
-    sqs(queue, "SendMessage",
+    sqs(queue, "SendMessage";
                MessageBody = message,
                MD5OfMessageBody = string(digest(MD_MD5, message)),
                options...
