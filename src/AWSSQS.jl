@@ -199,7 +199,6 @@ function sqs_send_message(queue::AWSQueue, message::String, groupId::String)
     sqs(queue, "SendMessage",
                MessageBody = message,
                MessageGroupId = groupId,
-               MessageDeduplicationId = string(digest(MD_MD5, groupId*message)),
                MD5OfMessageBody = string(digest(MD_MD5, message)))
 end
 
