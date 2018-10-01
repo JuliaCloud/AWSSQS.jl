@@ -194,6 +194,14 @@ function sqs_send_message(queue::AWSQueue, message)
                MD5OfMessageBody = string(digest(MD_MD5, message)))
 end
 
+function sqs_send_message(queue::AWSQueue, message::String, groupId::String)
+
+    sqs(queue, "SendMessage",
+               MessageBody = message,
+               MessageGroupId = groupId,
+               MD5OfMessageBody = string(digest(MD_MD5, message)))
+end
+
 
 """
     sqs_send_message_batch(::AWSQueue, messages)
