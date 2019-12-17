@@ -115,10 +115,10 @@ sqs_send_message(q, "my message")
 ```
 """
 function sqs_create_queue(aws::AWSConfig, name; options...)
-    query = Dict("QueueName" => name)
+    query = Dict{String, String}("QueueName" => name)
 
     for (i, (k, v)) in enumerate(options)
-        query["Attribute.$i.Name"] = k
+        query["Attribute.$i.Name"] = string(k)
         query["Attribute.$i.Value"] = v
     end
 
@@ -168,12 +168,15 @@ end
     sqs_send_message(::AWSQueue, message)
 
 Send a `message` to a queue.
+
+```
+sqs_send_message(queue, "Hello!", Dict(:MessageGroupId=>"Some_UUID"))
+```
 """
-function sqs_send_message(queue::AWSQueue, message)
-    sqs(queue, "SendMessage",
-        MessageBody = message,
-        MD5OfMessageBody = string(digest(MD_MD5, message))
-   )
+function sqs_send_message(queue::AWSQueue, message::String, options...)
+    sqs(queue, "SendMessage";
+        MessageBody=message, MD5OfMessageBody=string(digest(MD_MD5, message)), options...
+    )
 end
 
 
