@@ -15,7 +15,7 @@ module AWSSQS
 export sqs_arn, sqs_busy_count, sqs_count, sqs_create_queue, sqs_delete_message,
     sqs_delete_queue, sqs_flush, sqs_get_queue, sqs_get_queue_attributes, sqs_list_queues,
     sqs_messages, sqs_name, sqs_receive_message, sqs_send_message, sqs_send_message_batch,
-    sqs_set_policy
+    sqs_set_policy, sqs_change_message_visibility
 
 using AWSCore
 using SymDict
@@ -244,6 +244,14 @@ function sqs_delete_message(queue::AWSQueue, message)
     sqs(queue, "DeleteMessage", ReceiptHandle = message[:handle])
 end
 
+"""
+    sqs_change_message_visibility(::AWSQueue, message, visibility_timeout)
+
+Delete a `message` from a queue.
+"""
+function sqs_change_message_visibility(queue::AWSQueue, message, visibility_timeout)
+    sqs(queue, "ChangeMessageVisibility", VisibilityTimeout=visibility_timeout, ReceiptHandle = message[:handle])
+end
 
 """
     sqs_flush(::AWSQueue)
