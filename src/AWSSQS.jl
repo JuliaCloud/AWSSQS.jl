@@ -247,7 +247,7 @@ end
 """
     sqs_change_message_visibility(::AWSQueue, message, visibility_timeout)
 
-Delete a `message` from a queue.
+Change message visibility
 """
 function sqs_change_message_visibility(queue::AWSQueue, message, visibility_timeout)
     sqs(queue, "ChangeMessageVisibility", VisibilityTimeout=visibility_timeout, ReceiptHandle = message[:handle])

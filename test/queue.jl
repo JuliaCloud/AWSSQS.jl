@@ -85,6 +85,18 @@ end
 
         @test deleted_queue == nothing
     end
+
+    @testset "Change Message Visibility" begin
+        queue = create_queue()
+        sqs_send_message(queue, "Hello!")
+        message = sqs_receive_message(queue)
+        @test message[:message] == "Hello!"
+
+        sqs_change_message_visibility(queue, message, 0)
+
+        message = sqs_receive_message(queue)
+        @test message[:message] == "Hello!"
+    end
 end
 
 cleanup_queues()
