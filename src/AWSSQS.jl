@@ -250,7 +250,7 @@ end
 Change message visibility
 """
 function sqs_change_message_visibility(queue::AWSQueue, message, visibility_timeout)
-    sqs(queue, "ChangeMessageVisibility", VisibilityTimeout=visibility_timeout, ReceiptHandle = message[:handle])
+    sqs(queue, "ChangeMessageVisibility", VisibilityTimeout=visibility_timeout, ReceiptHandle=message[:handle])
 end
 
 """
