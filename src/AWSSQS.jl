@@ -247,7 +247,8 @@ end
 """
     sqs_change_message_visibility(::AWSQueue, message, visibility_timeout)
 
-Change message visibility
+Change the amount of time before a message can be re-read from a queue.
+Default message visibility timeout is 30 seconds, minimum is 0 seconds, maximum is 12 hours.
 """
 function sqs_change_message_visibility(queue::AWSQueue, message, visibility_timeout)
     sqs(queue, "ChangeMessageVisibility", VisibilityTimeout=visibility_timeout, ReceiptHandle=message[:handle])
