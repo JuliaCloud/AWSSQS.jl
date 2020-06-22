@@ -194,7 +194,7 @@ end
 """
     sqs_receive_message(::AWSQueue)
 
-Returns a `Dict` containing `:message` and `:handle`
+Returns a `Dict` containing `:message`, `:id` and `:handle`
 or `nothing` if the queue is empty.
 
 ```
@@ -212,11 +212,12 @@ function sqs_receive_message(queue::AWSQueue)
     end
 
     handle  = r[1]["ReceiptHandle"]
+    id      = r[1]["MessageId"]
     message = r[1]["Body"]
     md5     = r[1]["MD5OfBody"]
 
     @assert md5 == bytes2hex(digest(MD_MD5, message))
-    @SymDict(message, handle)
+    @SymDict(message, id, handle)
 end
 
 
