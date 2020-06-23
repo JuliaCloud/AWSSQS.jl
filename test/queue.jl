@@ -25,7 +25,7 @@ end
         sqs_send_message(queue, "Hello!", options...)
         message = sqs_receive_message(queue)
 
-        @test haskey(message, :id) && isempty(message[:id])
+        @test haskey(message, :id) && !isempty(message[:id])
         @test message[:message] == "Hello!"
     end
 
@@ -53,7 +53,7 @@ end
         sqs_send_message(queue, "Hello!")
         message = sqs_receive_message(queue)
 
-        @test haskey(message, :id) && isempty(message[:id])
+        @test haskey(message, :id) && !isempty(message[:id])
         @test message[:message] == "Hello!"
     end
 
@@ -68,7 +68,7 @@ end
         @test message_count == num_messages
 
         while (m=sqs_receive_message(queue)) != nothing
-            @test haskey(m, :id) && isempty(m[:id])
+            @test haskey(m, :id) && !isempty(m[:id])
             @test m[:message] == "test message"
         end
     end
