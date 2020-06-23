@@ -3,6 +3,7 @@
 AWS SQS Interface for Julia
 
 [![Build Status](https://travis-ci.org/JuliaCloud/AWSSQS.jl.svg)](https://travis-ci.org/JuliaCloud/AWSSQS.jl)
+[![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
 
 
 [Documentation](https://juliacloud.github.io/AWSCore.jl/build/AWSSQS.html)

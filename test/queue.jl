@@ -88,6 +88,51 @@ end
 
         @test deleted_queue == nothing
     end
+
+@testset "Message Visibility" begin
+        queue = create_queue()
+        message = "Hello!"
+
+        @testset "Default" begin
+            sqs_send_message(queue, message)
+            response = sqs_receive_message(queue)
+
+            @test response[:message] == message
+
+            response = sqs_receive_message(queue)
+
+            @test response == nothing
+        end
+
+        @testset "0 seconds" begin
+            sqs_send_message(queue, message)
+            response = sqs_receive_message(queue)
+
+            @test response[:message] == message
+
+            sqs_change_message_visibility(queue, response, 0)
+            response = sqs_receive_message(queue)
+
+            @test response[:message] == message
+        end
+
+        @testset "3 seconds" begin
+            sqs_send_message(queue, message)
+            response = sqs_receive_message(queue)
+
+            @test response[:message] == message
+
+            sqs_change_message_visibility(queue, response, 3)
+            response = sqs_receive_message(queue)
+
+            @test response == nothing
+            
+            sleep(3)
+            response = sqs_receive_message(queue)
+
+            @test response[:message] == message
+        end
+    end
 end
 
 cleanup_queues()
