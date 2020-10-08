@@ -7,17 +7,22 @@ julia:
   - 1
   - nightly
 notifications:
-  email: false
+    email:
+    recipients:
+      - nightly-dev@invenia.ca
+    on_success: never
+    on_failure: always
+    if: type = cron
 matrix:
   allow_failures:
-    - julia: nightly
+  - julia: nightly
 branches:
   only:
-    - master
-    - staging
-    - trying
-    - /^v[0-9]+\.[0-9]+\.[0-9]+$/  # version tags
+  - master
+  - staging
+  - trying
+  - "/^v[0-9]+\\.[0-9]+\\.[0-9]+$/"  # Version tags
 env:
   global:
-  - secure: EzKnEeT2XFdzVVAvT9Qh0SKvXE74JmaP+wLd4YAt31n7midyt2Qdt/5sfnORqujKAcvJC3JcQPanzS3TBE/L9TFugrcr32gDwfkSHOKVmbd2RHlNt6qZprzBf0C9xhap8dnPjUUZdp65L5S4yzHbBLQc/I2skQpb2XQu0FetKhAt5hFn1bJ3KUJeBVsxQP78qt7o5bXbmkn5tU8Mqzk0EX4vCYjFAcnqoea9GUzbuGNt4bi09ckF+y6gtHRrUu9rpNZuKTB7upC2E9Z+nffrqZJCmm6ss94oqI9aySloAyETYbYMlBT3eUpulrumSrGzAAdXGywwKsQvcljj1+SW+Dz2d6o4nBMZOTjjdg0ss1+c4gCBMD2H1zkWEeRhMCidkzZBBUUwa/p5aUfSLehoZvVKFSTF0AGxKmbrjTrlqizM3R417UBSyQv5RE1e0JPMVcS8VZoso1uqmAM1LmkuuJv2KCfJ5/wBRVdQkheu5wOcpdtJkcmvhoy8OChpDQMvjcIbcXnw534qHdbpxRmW0sUOIt4RKeeZoLz/YoL1wg+kOCsvpssl4LUJu0TEYP0gDc5rAdANqUrfZ2u+NDA6jF4NVz+DuCADnzLFHmqCuyq3QwjdHuTM7hNaU5deF+bW4BS807o+4HJQHG08cD/rpizPL3ikot8p9CIX4ikxplY=
-  - secure: ZFIclsDbXxzvhil6NDXz08ORTzxqtP2Dqvm0H1dlwfQKl6yXVDDoRJNskeyImjTGcgu5yZ18XTM0DkCaYz8BwTuYOAhvNCIQ3O/Qs26Pb2COfG8fmAeAlu8WL9eDih6d2lSUU6ACcIUF0+GJkPeVqi3GnFFisFYJyCdkh2Gv5HaQj+g2cK3aHnIHCe9nSMWLVh+/MqqWv0rUpXuwJPCSVtpZmj9a+jONsgXBj5LaTijRGeCGBUnbUuN5OjiVxJJN7KO6VTZAs+UkD1mFJ8ivBwnRSvkjkgsiEMtYeY+JmouNCJsdFkSu6TwsVw/DAhlsSd2SnYBQJCZNBPfwfoqseE7euViXv+zigfi8GC2YgJ5M0lZLJzRp/zBaIl8YtBmu09wQgw+wIP/fuEx3+4yWrDCIgPTqO+SINrUoNwUiVMfZevTpspCGJroOU3Al11WP2jI4W0KoqjTY9vMj+ZJzJJLxIlGCb+JK9NfMWnSZMx67nXh3VY+48w9Thi3fYSaq1In/H3nzbDiDwlnjDKKdxhYX6cOhlxMvSXNCrNnQEhzFAWdrlUrJPRgR4TkuHhO8BM1D52hdeu8PKx7Ovh3awdOFuPLgSIfCdQml9Izbdwtd/s1y9tR9ELFmIpIikQU82dkaPkMcTbpHl24RLS2pa9Jt1qAhfg/4raEExDS06BM=
+  - secure: hW8qDovoCdn4+RVh2FLkU6BFYGpTzgvEkDLhnqFYAwXfrqN7VQGrVE64tJxJIN8GDZyJ+V7zj7xiIOVSmFMJwaHoEiXyQtCx7VmZrDoaBwL1QumMmC4YwvBZ5u2hdd3gghgYPofcRpbGQDIWs4PjAYu2NeMgZ3JQnnvScrjDlgqKF5dxJdzjrOy+rVOTSKm0kQm5MEJ2mQ9BLJcXGEur7YEPCPXHC4ClReYSnB8pGuKoAHztMhlWrfIcmaLSxNG/nCYjGHOhGeNZxRs0p0AUofq+Ef4SD+i+gC3SVHOJum2xJNnAmcqQe3V7D/1eIpOsPKK+DzT8ENr5icrVS76gxIClou/vhKMwl7syL9hsR54YO21icOUFbRSwUZWVn9xvDRXjTXYc5wTwjheqHbtwPjV6O5SHyNilerqijub3TCSc4U2y8+epDknn0a/rl18KWzjpBuKYozfCDwI8ugOGIqqVIl1XvdyFeQWawIUWthV1wxpvex7nhrxRI1nEjbF6YS7i3G/P9VIkhDNFqJmo6I5J9Aq228/gBaVRqdQOQ9dmXO13Jw6ZsiBAOeyDp8fTujF7b4EAEkcEFHW89kBlSMHhr+QMaVwK5jfjnJpqfiGs82P7mGPT1XllEkJu5SKIUiB7dO6dhkBLDUiArIt/ZDjeX60zckaAwqrepCwZ+zM=
+  - secure: DGtg0N20c7smcOMGJlDk4Es+UH9/tGdqSbG3Quql+GgHgXT4PD3Rdua2AUj9keI4HL1TDX6sc0f/DRzoeSQ/t5bzcRoRjRAGIKR600blapzBAFoVXnRWZXFaiH07E2LkUyUyjM4NdTj7ZmZoaLeXRwMKs3wXCKcWemjgsXldEolqbgS9CEredYQLrNNqjRAdame6p2JeLhGclbHdgdIRuXwQkAxhfn1fHOGeOJ3PwQ2gKFTJ7ES6T5mcAa3Btc3XtRpLrwPkrQsedWZqWzKW0ENPVOmPOkY9qvB1HRZ/CR+DYyBcmLXbgHkkQ2Xa/GqNOe0HGO5Pm3ks9hLZa9GNyU2uw26uL2iPBwzixYGzSo1UJTq/JH3laN91vpFSKCJophmz90RFuYfnXWVB/dGC7Ag4Yq1o7NzZ3ymftXlVPHM+HVR/OkDe2KFOpHksjF8+O4NP9GdT6DoFLGrGCSfHkJSD3+gXwWY70i4R1VeVrlnFg8Z9zCvb+sV6WIkRSYt11MDdtrmze1N57RATpRiQ8XZ3PfSikBS8aWTZP048eEovS0Pzf+CKyjOfVox28dsRjAvkNeILJncUX+8ifPVUPgI5Ald+Hpi2gcSJqh44SS0rC4xRS5FW0tbaEXe01ndYfYbqM7l8h3mXAyzkLIMWw4VZxOMkK0YQyKfgdNfEXms=
