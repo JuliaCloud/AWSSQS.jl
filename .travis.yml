@@ -21,7 +21,7 @@ branches:
   - master
   - staging
   - trying
-  - "/^v[0-9]+\\.[0-9]+\\.[0-9]+$/"
+  - "/^v[0-9]+\\.[0-9]+\\.[0-9]+$/"  # Version tags
 env:
   global:
   - secure: hW8qDovoCdn4+RVh2FLkU6BFYGpTzgvEkDLhnqFYAwXfrqN7VQGrVE64tJxJIN8GDZyJ+V7zj7xiIOVSmFMJwaHoEiXyQtCx7VmZrDoaBwL1QumMmC4YwvBZ5u2hdd3gghgYPofcRpbGQDIWs4PjAYu2NeMgZ3JQnnvScrjDlgqKF5dxJdzjrOy+rVOTSKm0kQm5MEJ2mQ9BLJcXGEur7YEPCPXHC4ClReYSnB8pGuKoAHztMhlWrfIcmaLSxNG/nCYjGHOhGeNZxRs0p0AUofq+Ef4SD+i+gC3SVHOJum2xJNnAmcqQe3V7D/1eIpOsPKK+DzT8ENr5icrVS76gxIClou/vhKMwl7syL9hsR54YO21icOUFbRSwUZWVn9xvDRXjTXYc5wTwjheqHbtwPjV6O5SHyNilerqijub3TCSc4U2y8+epDknn0a/rl18KWzjpBuKYozfCDwI8ugOGIqqVIl1XvdyFeQWawIUWthV1wxpvex7nhrxRI1nEjbF6YS7i3G/P9VIkhDNFqJmo6I5J9Aq228/gBaVRqdQOQ9dmXO13Jw6ZsiBAOeyDp8fTujF7b4EAEkcEFHW89kBlSMHhr+QMaVwK5jfjnJpqfiGs82P7mGPT1XllEkJu5SKIUiB7dO6dhkBLDUiArIt/ZDjeX60zckaAwqrepCwZ+zM=
